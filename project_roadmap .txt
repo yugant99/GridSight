@@ -1,0 +1,153 @@
+﻿🚧 PHASE 1: DATA INGESTION (✅ already done)
+✅ raw data sources:
+Dataset
+	Format
+	Date Range
+	PUB_Demand
+	CSV
+	Jan–May 2025
+	Zonal Demand
+	CSV
+	Jan–May 2025
+	GenMix
+	XML
+	Jan–May 2025
+	Energy LMP
+	CSV
+	May only
+	Intertie LMP
+	XML
+	May only
+	✅ actions:
+* pulled all files from Azure blob (raw-data)
+
+* version-filtered Energy LMP files (one per day)
+
+* downloaded + parsed GenMix and Intertie XMLs
+
+________________
+
+
+🧹 PHASE 2: CLEANING & TRANSFORMATION (✅ in progress)
+✅ cleaned & timestamped:
+   * demand → timestamp, market demand, ontario demand
+
+   * zonal → timestamp, zone, value
+
+   * genmix → timestamp, fuel, MW output
+
+   * energylmp → timestamp, location, LMP, interval
+
+   * intertielmp → (tomorrow)
+
+✅ stored in:
+      * cleaned-data/ container on Azure
+
+      * foldered by dataset and year/month/day
+
+________________
+
+
+🗃️ PHASE 3: DUCKDB / QUERY LAYER (⚙️ next)
+📥 load into DuckDB:
+         * create DuckDB file: ieso.db
+
+         * CREATE TABLE for each dataset
+
+         * use pandas.to_sql(..., con=duckdb_connection) or read_csv_auto
+
+🧠 write sample queries:
+            * total generation by day & fuel
+
+            * demand vs LMP scatter for May
+
+            * hour-of-day trends for nuclear/hydro/wind
+
+            * high intertie price → does demand drop?
+
+✅ lets you build interactive visual dashboards / ML inputs
+________________
+
+
+🤖 PHASE 4: MODELLING (🚀 final push)
+________________
+
+
+🎯 MODEL 1: LMP PREDICTOR (May 2025 only)
+Goal: Predict hourly LMP based on GenMix, Demand, Intertie, Timestamp
+🛠 Steps:
+               1. Join:
+
+                  * Energy LMP
+
+                  * GenMix (same hour)
+
+                  * Demand
+
+                  * Intertie LMP
+
+                     2. Feature engineer:
+
+                        * fuel % mix
+
+                        * hour, weekday, interval
+
+                           3. Train:
+
+                              * XGBoostRegressor(LMP ~ demand + fuel mix + intertie)
+
+                                 4. Evaluate:
+
+                                    * RMSE, MAE
+
+                                    * feature importances
+
+________________
+
+
+🎯 MODEL 2: GENMIX FORECASTER (Jan–May)
+Goal: Predict hourly MW per fuel type
+🛠 Steps:
+                                       1. Time-index GenMix data
+
+                                       2. Add time features:
+
+                                          * day, hour, weekday, month
+
+                                          * lag features if needed
+
+                                             3. Train:
+
+                                                * RandomForestRegressor per fuel
+
+                                                * OR multivariate LSTM (optional)
+
+                                                   4. Evaluate:
+
+                                                      * fuel-level RMSE
+
+                                                      * prediction vs actual plot
+
+________________
+
+
+📊 PHASE 5: VISUALIZATION & REPORTING (final deliverables)
+🧾 what to show:
+                                                         * fuel mix over time (stacked bar)
+
+                                                         * LMP vs demand (May)
+
+                                                         * hourly generation patterns
+
+                                                         * model performance charts
+
+                                                         * system architecture diagram
+
+📦 deliverables:
+                                                            * cleaned datasets in Azure
+
+                                                            * 2 modeling notebooks/scripts
+
+                                                            * 1 final PDF/slide report
+
+                                                            * (optional) Streamlit dashboard or DuckDB SQL notebook

@@ -1,0 +1,119 @@
+﻿1. tables & schemas
+table name
+	primary key
+	columns (partial)
+	partition keys
+	Demand
+	timestamp
+	timestamp (UTC)
+ontario_mw
+	year, month, day
+	ZonalDemand
+	(timestamp, zone_name)
+	timestamp (UTC)
+zone_name
+demand_mw
+	year, month, day
+	GenMix
+	(timestamp, fuel_type)
+	timestamp (UTC)
+fuel_type (e.g. nuclear, gas)
+gen_mw
+	year, month, day
+	EnergyLMP
+	(timestamp, node_or_zone)
+	timestamp (UTC)
+location (node or zone)
+lmp_total
+loss_comp
+cong_comp
+	year, month, day
+	IntertieLMP
+	(timestamp, intertie_name)
+	timestamp (UTC)
+intertie_name
+component (e.g. “Intertie LMP”, “Energy Loss Price”)
+lmp
+flag
+	year, month, day
+	IntertieFlow (opt.)
+	(timestamp, intertie_name)
+	timestamp (UTC)
+intertie_name
+net_exp_mw
+scheduled_mw
+	year, month, day
+	________________
+
+
+2. how they link
+* time alignment: every table shares a timestamp (you’ll convert IESO’s <DeliveryDate> + DeliveryHour + interval into a full UTC timestamp—e.g. 2025-05-16T16:20Z for interval 1 of hour 17).
+
+* geography keys:
+
+   * zonal joins: ZonalDemand.zone_name = EnergyLMP.location (if you use zonal prices).
+
+   * intertie joins: IntertieLMP.intertie_name = IntertieFlow.intertie_name.
+
+      * fuel vs. demand: to compare generation mix vs. system load, join GenMix.timestamp = Demand.timestamp.
+
+________________
+
+
+3. Azure topology
+         1. raw container (Blob storage)
+
+            * land all incoming CSV/XML files under /raw/<report>/year=YYYY/…
+
+               2. bronze Delta tables
+
+                  * one Delta table per report, ingest via Spark Structured Streaming or batch jobs.
+
+                     3. silver tables
+
+                        * normalize schemas (e.g. explode <Components> into rows), enforce types, drop null intervals.
+
+                           4. gold views
+
+                              * pre-joined fact tables for your ML pipeline (e.g. combine Demand + Zonal + LMP features).
+
+________________
+
+
+4. join columns & why
+join type
+	columns
+	why
+	time-series merge
+	timestamp
+	align all measurements to the same 5-min window
+	regional feature enrichment
+	(timestamp, zone_name) ↔ (timestamp, location)
+	attach price to each zone’s demand
+	cross-report consistency check
+	(timestamp, intertie_name)
+	compare price components vs. actual flows
+	demand vs. supply correlation
+	Demand.timestamp = GenMix.timestamp
+	analyze how generation mix drives system load
+	________________
+
+
+5. next steps
+                                 1. define your Delta schemas in Azure (Synapse or Databricks)—create the table DDLs matching the above.
+
+                                 2. provision storage containers and set up access (SAS or managed identity).
+
+                                 3. backfill initial data by uploading a month or two of historical files into /raw/....
+
+                                 4. write ingestion scripts (Spark Structured Streaming jobs) to:
+
+                                    * discover new files in /raw/<report>/…
+
+                                    * parse CSV/XML into DataFrames using your predefined StructType
+
+                                    * write to bronze Delta tables.
+
+                                       5. validate & transform in silver layer (explode, cast, filter).
+
+                                       6. build gold fact views for your ML training jobs.

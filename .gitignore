@@ -1,0 +1,81 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Local data files (exclude large datasets)
+*.csv
+*.xml
+*.json
+*.parquet
+
+# Local directories with downloaded data
+lmp_cleaned/
+data_1/
+Azure_backfill/
+Azure_clean_notpushed/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+
+# Azure connection strings and keys (if any config files are created)
+config.py
+config.ini
+.env.local
+credentials.json
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Documentation builds
+docs/_build/ 
