@@ -53,11 +53,18 @@ Thumbs.db
 *.json
 *.parquet
 
+# Database files
+*.db
+*.duckdb
+*.sqlite
+*.sqlite3
+
 # Local directories with downloaded data
 lmp_cleaned/
 data_1/
 Azure_backfill/
 Azure_clean_notpushed/
+duckdb_analytics/data/
 
 # Logs
 *.log
