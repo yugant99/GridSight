@@ -12,12 +12,18 @@ Modular IESO data scraping system for Azure integration.
 
 ```
 azure_live_scraper/
-├── config_template.py      # Template for Azure credentials
-├── scraper_utils.py         # Web scraping utilities
-├── azure_utils.py           # Azure blob storage utilities
-├── energylmp_gap_filler.py  # EnergyLMP scraper
-├── requirements.txt         # Dependencies
-└── README.md               # This file
+├── config_template.py          # Template for Azure credentials
+├── scraper_utils.py             # Web scraping utilities
+├── azure_utils.py               # Azure blob storage utilities
+├── energylmp_gap_filler.py      # EnergyLMP scraper
+├── intertielmp_gap_filler.py    # IntertieLMP scraper
+├── genmix_gap_filler.py         # GenMix scraper
+├── demand_gap_filler.py         # Demand scraper
+├── demandzone_gap_filler.py     # DemandZonal scraper
+├── all_datasets_gap_filler.py   # Master orchestrator
+├── setup.py                     # Setup helper
+├── requirements.txt             # Dependencies
+└── README.md                   # This file
 ```
 
 ## 🎯 Features
@@ -40,14 +46,16 @@ azure_live_scraper/
 
 ### Individual Dataset Scraping
 ```bash
-python energylmp_gap_filler.py      # Energy pricing
-python intertielmp_gap_filler.py    # Cross-border pricing
-python genmix_gap_filler.py         # Generation mix
+python energylmp_gap_filler.py      # Energy pricing (CSV, hourly)
+python intertielmp_gap_filler.py    # Cross-border pricing (XML, hourly)
+python genmix_gap_filler.py         # Generation mix (XML, annual)
+python demand_gap_filler.py         # Provincial demand (CSV, annual)
+python demandzone_gap_filler.py     # Zonal demand (CSV, annual)
 ```
 
 ### Comprehensive Scraping
 ```bash
-python all_datasets_gap_filler.py   # All datasets at once
+python all_datasets_gap_filler.py   # All 5 datasets at once
 ```
 
 ## 🔧 Configuration
