@@ -85,4 +85,12 @@ credentials.json
 .ipynb_checkpoints/
 
 # Documentation builds
-docs/_build/ 
+docs/_build/
+
+# Synapse development files
+*.syws
+*.sproj
+
+# Ignore the credential-laden SQL files until properly secured
+create-external-tables.sql
+synapse-external-tables-corrected.sql 
