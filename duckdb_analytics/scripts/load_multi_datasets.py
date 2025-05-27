@@ -1,5 +1,5 @@
-import duckdb
-import glob
+import duckdb 
+import glob 
 
 conn = duckdb.connect('duckdb_analytics.db')
 
@@ -17,7 +17,7 @@ def load_energy_lmp_files():
             FROM read_csv_auto('{file}')
         """)
     
-    count = conn.execute('SELECT COUNT(*) FROM energy_lmp').fetchone()[0]
+        count = conn.execute('SELECT COUNT(*) FROM energy_lmp').fetchone()[0]
     print(f"✅ EnergyLMP loaded: {count:,} records")
 
 def load_intertie_lmp_files():
@@ -32,7 +32,7 @@ def load_intertie_lmp_files():
             SELECT timestamp::TIMESTAMP, intertie_name, location, connection, 
                    code, interval_set, interval, lmp_value, flag
             FROM read_csv_auto('{file}')
-        """)
+            """)
     
     count = conn.execute("SELECT COUNT(*) FROM intertie_lmp").fetchone()[0]
     print(f"✅ IntertieLMP loaded: {count:,} records")

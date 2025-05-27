@@ -40,13 +40,13 @@ for daily_data in root.findall(".//{http://www.ieso.ca/schema}DailyData"):
                     'output_quality': output_quality,
                     'output': output
                 }
-                rows.append(row)
+    rows.append(row)
 
 print(f"✅ Total records found: {len(rows)}")
 
 # === show first few records ===
 for i, row in enumerate(rows[:5]):
-    print(f"{i+1}: {row}")
+        print(f"{i+1}: {row}")
 
 # === convert to DataFrame ===
 df = pd.DataFrame(rows)

@@ -42,4 +42,4 @@ def download_all_cleaned_data():
     print("✅ All data downloaded!")
 
 if __name__ == "__main__":
-    download_all_cleaned_data() 
+    download_all_cleaned_data()
