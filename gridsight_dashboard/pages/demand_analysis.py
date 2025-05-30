@@ -208,10 +208,14 @@ def show():
     with col1:
         if st.button("📊 Download Filtered Data (CSV)"):
             csv = filtered_data.to_csv(index=False)
+            if len(date_range) == 2:
+                filename = f"ontario_demand_{str(date_range[0])}_{str(date_range[1])}.csv"
+            else:
+                filename = f"ontario_demand_latest_{datetime.now().strftime('%Y%m%d')}.csv"
             st.download_button(
                 label="Download CSV",
                 data=csv,
-                file_name=f"ontario_demand_{date_range[0]}_{date_range[1] if len(date_range)==2 else datetime.now().date()}.csv",
+                file_name=filename,
                 mime="text/csv"
             )
     

@@ -111,6 +111,32 @@ def load_zonal_data():
     latest_file = sorted(zonal_files)[-1]
     return load_data_from_azure("cleaned-data", latest_file)
 
+@st.cache_data(ttl=3600)
+def load_intertie_lmp_data():
+    """Load intertie LMP (Locational Marginal Pricing) data"""
+    files = get_available_data_files()
+    intertie_files = [f for f in files.get('cleaned_data', []) if 'Intertie' in f and f.endswith('.csv')]
+    
+    if not intertie_files:
+        return None
+    
+    # Load the most recent intertie LMP file
+    latest_file = sorted(intertie_files)[-1]
+    return load_data_from_azure("cleaned-data", latest_file)
+
+@st.cache_data(ttl=3600)
+def load_energy_lmp_data():
+    """Load energy LMP (Locational Marginal Pricing) data"""
+    files = get_available_data_files()
+    energy_lmp_files = [f for f in files.get('cleaned_data', []) if 'EnergyLMP' in f and f.endswith('.csv')]
+    
+    if not energy_lmp_files:
+        return None
+    
+    # Load the most recent energy LMP file
+    latest_file = sorted(energy_lmp_files)[-1]
+    return load_data_from_azure("cleaned-data", latest_file)
+
 def refresh_cache():
     """Clear all cached data to force refresh"""
     st.cache_data.clear()

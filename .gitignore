@@ -81,6 +81,10 @@ config.ini
 .env.local
 credentials.json
 
+# Streamlit secrets (contains Azure storage keys)
+gridsight_dashboard/.streamlit/secrets.toml
+.streamlit/secrets.toml
+
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 

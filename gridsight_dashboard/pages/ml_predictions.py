@@ -106,29 +106,33 @@ def show():
             # Grid stress alerts
             st.markdown("### ⚠️ Grid Stress Detection")
             
-            stress_alerts = [f for f in forecasts if f.get('grid_stress_risk', 0) > 0.5]
-            
-            if stress_alerts:
-                st.error(f"🚨 **{len(stress_alerts)} Grid Stress Alerts** detected in the next 24 hours!")
+            # Check if grid_stress_risk column exists
+            if 'grid_stress_risk' in forecast_df.columns:
+                stress_alerts = [f for f in forecasts if f.get('grid_stress_risk', 0) > 0.5]
                 
-                # Show stress periods
-                stress_df = pd.DataFrame(stress_alerts)
-                stress_df['timestamp'] = pd.to_datetime(stress_df['timestamp'])
-                
-                fig_stress = px.scatter(
-                    stress_df,
-                    x='timestamp',
-                    y='predicted_demand',
-                    color='grid_stress_risk',
-                    size='grid_stress_risk',
-                    title='Grid Stress Risk Periods',
-                    labels={'grid_stress_risk': 'Stress Risk', 'predicted_demand': 'Predicted Demand (MW)'},
-                    color_continuous_scale='Reds'
-                )
-                fig_stress.update_layout(height=400)
-                st.plotly_chart(fig_stress, use_container_width=True)
+                if stress_alerts:
+                    st.error(f"🚨 **{len(stress_alerts)} Grid Stress Alerts** detected in the next 24 hours!")
+                    
+                    # Show stress periods
+                    stress_df = pd.DataFrame(stress_alerts)
+                    stress_df['timestamp'] = pd.to_datetime(stress_df['timestamp'])
+                    
+                    fig_stress = px.scatter(
+                        stress_df,
+                        x='timestamp',
+                        y='predicted_demand',
+                        color='grid_stress_risk',
+                        size='grid_stress_risk',
+                        title='Grid Stress Risk Periods',
+                        labels={'grid_stress_risk': 'Stress Risk', 'predicted_demand': 'Predicted Demand (MW)'},
+                        color_continuous_scale='Reds'
+                    )
+                    fig_stress.update_layout(height=400)
+                    st.plotly_chart(fig_stress, use_container_width=True)
+                else:
+                    st.success("✅ No grid stress alerts predicted for the next 24 hours")
             else:
-                st.success("✅ No grid stress alerts predicted for the next 24 hours")
+                st.info("ℹ️ Grid stress detection data not available in current predictions")
             
             # Hourly breakdown
             col1, col2 = st.columns(2)
@@ -150,7 +154,18 @@ def show():
             
             with col2:
                 st.markdown("### 📈 Peak Demand Predictions")
-                peak_hours = forecast_df.nlargest(5, 'predicted_demand')[['timestamp', 'predicted_demand', 'grid_stress_risk']]
+                peak_hours = forecast_df.nlargest(5, 'predicted_demand')[['timestamp', 'predicted_demand']]
+                
+                # Add grid_stress_risk only if it exists
+                if 'grid_stress_risk' in forecast_df.columns:
+                    peak_hours = forecast_df.nlargest(5, 'predicted_demand')[['timestamp', 'predicted_demand', 'grid_stress_risk']]
+                    color_col = 'grid_stress_risk'
+                    color_scale = 'Reds'
+                else:
+                    peak_hours = forecast_df.nlargest(5, 'predicted_demand')[['timestamp', 'predicted_demand']]
+                    color_col = 'predicted_demand'
+                    color_scale = 'Blues'
+                
                 peak_hours['timestamp_str'] = peak_hours['timestamp'].dt.strftime('%Y-%m-%d %H:%M')
                 
                 fig_peak = px.bar(
@@ -158,8 +173,8 @@ def show():
                     x='timestamp_str',
                     y='predicted_demand',
                     title='Top 5 Peak Demand Periods',
-                    color='grid_stress_risk',
-                    color_continuous_scale='Reds'
+                    color=color_col,
+                    color_continuous_scale=color_scale
                 )
                 fig_peak.update_layout(height=400)
                 fig_peak.update_xaxes(tickangle=45)
@@ -173,7 +188,11 @@ def show():
             with col1:
                 table_rows = st.selectbox("Rows to display", [10, 24, 50], index=1)
             with col2:
-                sort_column = st.selectbox("Sort by", ['timestamp', 'predicted_demand', 'grid_stress_risk'])
+                # Only include grid_stress_risk in sort options if it exists
+                sort_options = ['timestamp', 'predicted_demand']
+                if 'grid_stress_risk' in forecast_df.columns:
+                    sort_options.append('grid_stress_risk')
+                sort_column = st.selectbox("Sort by", sort_options)
             
             # Format table data
             table_data = forecast_df.copy()

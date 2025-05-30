@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import json
 
 # Import page modules
-from pages import landing, demand_analysis, genmix_analysis, ml_predictions, zonal_analysis
+from pages import landing, demand_analysis, genmix_analysis, ml_predictions, zonal_analysis, intertie_lmp_analysis, energy_lmp_analysis
 from utils.data_loader import load_data_from_azure
 from utils.azure_config import get_azure_config
 
@@ -86,7 +86,9 @@ def main():
         "📊 Demand Analysis": demand_analysis,
         "⚡ Generation Mix": genmix_analysis,
         "🤖 ML Predictions": ml_predictions,
-        "🗺️ Zonal Analysis": zonal_analysis
+        "🗺️ Zonal Analysis": zonal_analysis,
+        "🔗 Intertie LMP Analysis": intertie_lmp_analysis,
+        "💰 Energy LMP Analysis": energy_lmp_analysis
     }
     
     selected_page = st.sidebar.radio("Select Page", list(pages.keys()))

@@ -77,8 +77,7 @@ def show():
             color_continuous_scale='viridis'
         )
         fig_zones.update_layout(height=400)
-        fig_zones.update_xaxis(title="Average Demand (MW)")
-        fig_zones.update_yaxis(title="Zone")
+        fig_zones.update_layout(xaxis_title="Average Demand (MW)", yaxis_title="Zone")
         st.plotly_chart(fig_zones, use_container_width=True)
         
         # Time series by zone
@@ -215,8 +214,7 @@ def show():
         color_continuous_scale='viridis'
     )
     fig_zones.update_layout(height=400, showlegend=False)
-    fig_zones.update_xaxis(title="Average Demand (MW)")
-    fig_zones.update_yaxis(title="Zone")
+    fig_zones.update_layout(xaxis_title="Average Demand (MW)", yaxis_title="Zone")
     st.plotly_chart(fig_zones, use_container_width=True)
     
     # Time series analysis
@@ -335,10 +333,15 @@ def show():
     with col1:
         if st.button("📊 Download Zonal Data (CSV)"):
             csv = filtered_data.to_csv(index=False)
+            # Fix filename generation to handle date types properly
+            if len(date_range) == 2:
+                filename = f"ontario_zonal_{str(date_range[0])}_{str(date_range[1])}.csv"
+            else:
+                filename = f"ontario_zonal_latest_{datetime.now().strftime('%Y%m%d')}.csv"
             st.download_button(
                 label="Download CSV",
                 data=csv,
-                file_name=f"ontario_zonal_{date_range[0] if len(date_range)==2 else 'latest'}.csv",
+                file_name=filename,
                 mime="text/csv"
             )
     
