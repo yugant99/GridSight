@@ -151,8 +151,8 @@ def show():
                 color_continuous_scale='viridis'
             )
             fig_bar.update_layout(height=400, showlegend=False)
-            fig_bar.update_xaxis(title="Average Output (MW)")
-            fig_bar.update_yaxis(title="Fuel Type")
+            fig_bar.update_xaxes(title="Average Output (MW)")
+            fig_bar.update_yaxes(title="Fuel Type")
             st.plotly_chart(fig_bar, use_container_width=True)
         
         with col2:
