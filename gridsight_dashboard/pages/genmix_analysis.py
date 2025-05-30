@@ -148,11 +148,15 @@ def show():
                 orientation='h',
                 title='Average Output by Fuel Type',
                 color=fuel_avg.values,
-                color_continuous_scale='viridis'
+                color_continuous_scale='viridis',
+                labels={'x': 'Average Output (MW)', 'y': 'Fuel Type'}
             )
-            fig_bar.update_layout(height=400, showlegend=False)
-            fig_bar.update_xaxes(title="Average Output (MW)")
-            fig_bar.update_yaxes(title="Fuel Type")
+            fig_bar.update_layout(
+                height=400, 
+                showlegend=False,
+                xaxis_title="Average Output (MW)",
+                yaxis_title="Fuel Type"
+            )
             st.plotly_chart(fig_bar, use_container_width=True)
         
         with col2:
